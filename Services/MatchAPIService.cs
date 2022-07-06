@@ -35,18 +35,19 @@ namespace BettingDataProvider.Services
             return result ;
         }
        
-        public List<MatchResult>  GetUpcomingMatches()
+        public async Task<List<MatchResult>>  GetUpcomingMatches()
         {
-            var UpcomingMatches = _context.Matches
+            var result = await Task.Run(() =>
+                _context.Matches
                 .Where(x => x.StartDate > DateTime.Now.AddHours(-24) && x.StartDate <= DateTime.Now)
-                .Select(m => new MatchResult
+                .Select(  m =>  new MatchResult
                 {
                     MatchName = m.Name,
                     StartDate = m.StartDate,
                     Markets = m.Bet.Where(x => x.Name == "Match Winner" || x.Name == "Map Advantage" || x.Name == "Total Maps Played").ToList()
-                }).ToList();
+                }).ToList());
 
-            return UpcomingMatches;
+            return result;
         }
     }
 }

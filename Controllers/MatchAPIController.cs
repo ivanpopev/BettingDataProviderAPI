@@ -30,11 +30,11 @@ namespace BettingDataProvider.Controllers
             }
         }
         [HttpGet]
-        public List<MatchResult> GetMatches()
+        public async Task<List<MatchResult>> GetMatches()
         {
             try
             {
-                return _service.GetUpcomingMatches();
+                return await _service.GetUpcomingMatches();
             }
             catch (Exception ex)
             {
