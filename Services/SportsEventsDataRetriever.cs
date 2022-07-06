@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 using BettingDataProvider.Context;
 using Microsoft.EntityFrameworkCore;
 using Polly;
+using Newtonsoft.Json;
 
 namespace BettingDataProvider.Services
 {
@@ -16,6 +17,11 @@ namespace BettingDataProvider.Services
         public List<Sport> Sport { get; set; }
         [XmlAttribute("CreateDate")]
         public string CreateDate { get; set; }
+    }
+
+    public class JsonRootElement
+    {
+        public Data XmlSports { get; set; }
     }
     public class SportsEventsDataRetriever
     {
@@ -37,20 +43,29 @@ namespace BettingDataProvider.Services
         }
 
         private async Task FetchData()
-        {           
-            var result = await httpClient.GetAsync(SPORTS_DATA_URL);
-            var stream = await result.Content.ReadAsStringAsync();
-
-            var itemXml = XElement.Parse(stream);
-            XmlSerializer serializer = new XmlSerializer(typeof(Data));
-            var data = (Data)serializer.Deserialize(itemXml.CreateReader());
-
-            if (data != null)
+        {
+            try
             {
-                data.Sport.ForEach(s => _context.Add(s));
-                await _context.SaveChangesAsync();
-                Console.Write("FETCHEEED");
+                var result = await httpClient.GetAsync(SPORTS_DATA_URL);
+                var stream = await result.Content.ReadAsStringAsync();
+
+                var itemXml = XElement.Parse(stream);
+                XmlSerializer serializer = new XmlSerializer(typeof(Data));
+                var data = (Data)serializer.Deserialize(itemXml.CreateReader());
+
+                if (data != null)
+                {
+                    data.Sport.ForEach(s => _context.Add(s));
+                    await _context.SaveChangesAsync();
+                    Console.Write("FETCHEEED");
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine();
+                throw;
+            }
+            
         }      
     }
 }

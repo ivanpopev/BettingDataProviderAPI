@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BettingDataProvider.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220704080851_initialCreate")]
-    partial class initialCreate
+    [Migration("20220706200101_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -85,9 +85,8 @@ namespace BettingDataProvider.Migrations
                     b.Property<int?>("EventId")
                         .HasColumnType("int");
 
-                    b.Property<string>("MatchType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("MatchType")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
